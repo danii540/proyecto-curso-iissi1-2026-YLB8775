@@ -78,48 +78,189 @@ La entidad base Usuario es la encargada de almacenar las credenciales de acceso 
 
 ## 4. Catálogo de requisitos
 
-### 4.1. Requisitos funcionales
+# 4. Catálogo de requisitos
 
-#### R.F.01. Título requisito funcional
+## 4.1. Requisitos funcionales
 
-Como [tipo de usuario]
-quiero [servicio]
-para [razón]
-
-**Prueba de aceptación**
-- Descripción de la primera comprobación a realizar
-- Descripción de la segunda comprobación a realizar
-- Se debe aplicar la regla de negocio R.N.XX.
-- ...
-
-#### 4.1.1. Requisitos de información
-
-##### R.I.01. Título requisito de información
-
-Como [tipo de usuario]
-quiero [servicio]
-para [razón]
+### R.F.01. Meter un jugador en un equipo
+**Como** Gestor **quiero** apuntar y vincular a un jugador dentro de un equipo **para** ir armando la plantilla de la temporada.
 
 **Prueba de aceptación**
-- Descripción de la primera comprobación a realizar
-- Descripción de la segunda comprobación a realizar
-- ...
+* Comprobar que el jugador existe en el sistema y elegir el equipo indicando su grupo y su temporada.
+* Ver cuántos jugadores hay ya apuntados en el equipo antes de confirmar la entrada.
+* Se debe aplicar la regla de negocio **R.N.02**.
 
-#### 4.1.2. Reglas de negocio
+---
 
-##### R.N.01. Título regla negocio
+### R.F.02. Apuntar asistencia y nota del entrenamiento
+**Como** Gestor **quiero** registrar si un jugador ha venido al entreno y ponerle su nota **para** llevar al día el seguimiento de su rendimiento.
 
-Descripción de la regla de negocio.
+**Prueba de aceptación**
+* Comprobar que el jugador tiene pagada la cuota de ese mes antes del entrenamiento.
+* Ver que la nota que le ponemos se quede guardada correctamente en su ficha del entrenamiento (`Partición`).
+* Se debe aplicar la regla de negocio **R.N.01**.
+* Se debe aplicar la regla de negocio **R.N.04**.
 
-### 4.2. Mapa de historias de usuario (opcional)
+---
 
-### 4.3. Requisitos no funcionales (opcional)
+### R.F.03. Hacer el contrato de un entrenador
+**Como** Gestor **quiero** firmar y guardar el contrato de un entrenador con un equipo **para** asignarle oficialmente su grupo.
 
-**R.N.F. 01. Título requisito no funcional**
-Como [tipo de usuario]
-quiero [servicio]
-para [razón]
+**Prueba de aceptación**
+* Elegir un entrenador y un equipo poniendo la fecha en que empieza y en la que termina el contrato.
+* Comprobar que el sistema revise las fechas y no deje poner un periodo más largo de lo permitido.
+* Se debe aplicar la regla de negocio **R.N.03**.
 
+---
+
+### R.F.04. Ver si el pago está al día
+**Como** Jugador **quiero** mirar mis pagos pasados y saber si tengo la cuota al mes **para** estar seguro de que puedo ir a entrenar.
+
+**Prueba de aceptación**
+* Entrar a la app y ver la lista de pagos de mi propia cuenta.
+* Ver cada recibo con el dinero pagado y la fecha en que se hizo.
+* Se debe aplicar la regla de negocio **R.N.01**.
+
+---
+
+### R.F.05. Ver mi asistencia y mis notas
+**Como** Jugador **quiero** ver a qué entrenos he ido y qué notas me han puesto **para** saber cómo voy en el equipo.
+
+**Prueba de aceptación**
+* Entrar al historial de entrenamientos a los que he asistido.
+* Ver en cada entrenamiento el día que fui (`fechaAcude`) y la nota que me puso el cuerpo técnico (`Rendimiento`).
+* Se debe aplicar la regla de negocio **R.N.04**.
+
+---
+
+### R.F.06. Guardar y organizar los campos de fútbol
+**Como** Gestor **quiero** dar de alta y cambiar los datos de los campos de fútbol **para** organizar los espacios de entreno y alquileres.
+
+**Prueba de aceptación**
+* Guardar los datos de identificación del campo deportivo.
+* Ver la lista completa de campos que gestiona el club.
+
+---
+
+### 4.1.1. Requisitos de información
+
+#### R.I.01. Datos de usuario y login
+**Como** Gestor **quiero** guardar el correo y la clave de cada persona **para** que puedan entrar a la app de forma segura.
+
+**Prueba de aceptación**
+* Comprobar que sea obligatorio poner `email` y `contraseña`.
+* Ver que cada cuenta creada sea obligatoriamente de tipo `Jugador` o `Gestor`.
+* Se debe aplicar la regla de negocio **R.N.05**.
+
+#### R.I.02. Ficha del jugador
+**Como** Gestor **quiero** guardar los datos de los futbolistas **para** tener la lista completa de los chicos de la academia.
+
+**Prueba de aceptación**
+* Comprobar que se guardan el `nombre`, `fechaNacimiento` y `telefono`.
+* Comprobar que incluye los datos de inicio de sesión por ser un tipo de `Usuario`.
+
+#### R.I.03. Ficha del gestor
+**Como** Gestor **quiero** guardar mis datos de contacto **para** saber quién hace las gestiones administrativas.
+
+**Prueba de aceptación**
+* Comprobar que se guardan el `nombre` y `telefono`.
+* Comprobar que incluye los datos de inicio de sesión por ser un tipo de `Usuario`.
+
+#### R.I.04. Datos del equipo
+**Como** Gestor **quiero** guardar la información de los equipos **para** tenerlos organizados por grupos y años.
+
+**Prueba de aceptación**
+* Comprobar que se guardan el `grupo` y la `temporada`.
+* Ver que el equipo queda bien conectado con sus jugadores y sus entrenadores.
+
+#### R.I.05. Datos del entrenador
+**Como** Gestor **quiero** guardar la información del entrenador **para** saber a quién contratamos en el club.
+
+**Prueba de aceptación**
+* Comprobar que se apuntan el `nombre`, `telefono` y `DNI`.
+* Confirmar que es un dato que maneja el Gestor y que el entrenador no tiene cuenta para entrar a la app.
+
+#### R.I.06. Datos del contrato
+**Como** Gestor **quiero** guardar las fechas del contrato del entrenador **para** saber cuándo empieza y cuándo termina su trabajo.
+
+**Prueba de aceptación**
+* Comprobar que se guardan la `fechaInicio` y `fechaFin` al unir al entrenador con el equipo.
+* Se debe aplicar la regla de negocio **R.N.03**.
+
+#### R.I.07. Horarios del entrenamiento
+**Como** Gestor **quiero** guardar los horarios de los entrenamientos **para** organizar la agenda del club sin líos.
+
+**Prueba de aceptación**
+* Comprobar que se guardan la `fechaHoraInicio` y la `fechaHoraFin`.
+* Ver a qué equipo le toca entrenar en esa hora.
+
+#### R.I.08. Datos de asistencia y notas (Partición)
+**Como** Gestor **quiero** guardar si el jugador fue al entreno y su nota **para** saber cómo evoluciona en el campo.
+
+**Prueba de aceptación**
+* Comprobar que se guarda el día que fue (`fechaAcude`) y la nota obtenida (`Rendimiento`).
+* Se debe aplicar la regla de negocio **R.N.04**.
+
+#### R.I.09. Datos del pago
+**Como** Gestor **quiero** guardar los cobros de las cuotas **para** saber quién ha pagado y quién debe dinero.
+
+**Prueba de aceptación**
+* Comprobar que se guardan el `importe` (dinero) y la `fecha` del pago.
+* Ver a qué jugador le pertenece ese recibo.
+
+#### R.I.10. Datos del campo
+**Como** Gestor **quiero** guardar los detalles de las pistas **para** saber con qué campos cuenta la academia.
+
+**Prueba de aceptación**
+* Comprobar que se guardan los datos e identificadores del campo (`Item 1`, `Item 2`, `Item 3`).
+* Ver qué Gestor se encarga de ese campo.
+
+---
+
+### 4.1.2. Reglas de negocio
+
+#### R.N.01. Hay que pagar para entrenar
+El pago mensual debe de ser realizado por el jugador para participar en el entrenamiento.
+
+#### R.N.02. Límite de jugadores en el equipo
+Un equipo tendrá un máximo de 25 jugadores.
+
+#### R.N.03. Duración máxima del contrato
+Los contratos tienen una duración máxima de 1 año.
+
+#### R.N.04. Notas entre 0 y 10
+El rendimiento será entre 0 y 10.
+
+#### R.N.05. Tipos de usuario bien definidos
+La jerarquía de herencia de Usuario es `{completa, disjunta}`, así que cualquier cuenta registrada en la app tiene que ser sí o sí un Jugador o un Gestor (no se puede ser las dos cosas a la vez ni dejarlo sin definir).
+
+---
+
+## 4.2. Mapa de historias de usuario (opcional)
+
+| ID Historia | Rol / Actor | Servicio / Acción | R.F. Relacionado | Regla de Negocio |
+| :--- | :--- | :--- | :---: | :---: |
+| **HU-01** | Gestor | Dar de alta y cambiar datos de los campos de fútbol | R.F.06 | - |
+| **HU-02** | Gestor | Hacer el contrato del entrenador para un equipo | R.F.03 | R.N.03 |
+| **HU-03** | Gestor | Apuntar jugadores en las plantillas de los equipos | R.F.01 | R.N.02 |
+| **HU-04** | Jugador | Ver los pagos hechos y saber si la cuota está al día | R.F.04 | R.N.01 |
+| **HU-05** | Jugador | Ver los entrenos a los que ha ido y sus notas | R.F.05 | R.N.04 |
+| **HU-06** | Gestor | Apuntar la asistencia y poner la nota en un entreno | R.F.02 | R.N.01, R.N.04 |
+
+---
+
+## 4.3. Requisitos no funcionales (opcional)
+
+### R.N.F. 01. Guardar contraseñas de forma segura
+**Como** Jugador / Gestor **quiero** que mi clave se guarde encriptada en la base de datos **para** que nadie pueda robármela ni verla en texto plano.
+
+### R.N.F. 02. Rapidez de la aplicación
+**Como** Gestor / Jugador **quiero** que las listas y datos de la app carguen rápido (en menos de 1 segundo) **para** no perder tiempo esperando en la pantalla.
+
+### R.N.F. 03. Control automático de fallos en los datos
+**Como** Gestor **quiero** que el sistema me avise o me bloquee si pongo mal una nota o un contrato **para** no guardar datos incorrectos por descuido.
+
+-- fin entregable 1 --
 -- fin entregable 1 --
 
 ## 5. Modelo conceptual
