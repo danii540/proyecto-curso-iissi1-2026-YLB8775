@@ -48,13 +48,12 @@ Los términos específicos empleados en el dominio del problema son los siguient
 ### 3.1. Requisitos generales
 
 ### 3.2. Usuarios del sistema
-### Tabla 1.1: Matriz de Actores, Usuarios y Perfiles del Sistema
 
-| **Tipo de Actor** | **Rol / Perfil** | **Acceso a la Plataforma** | **Descripción y Situación Actual** | **Expectativas del Sistema** |
-| :--- | :--- | :---: | :--- | :--- |
-| **Gestor** | Directivo / Administración | **Sí** *(Usuario)* | Responsable de la administración global del club, gestión del personal técnico, supervisión de plantillas, control de cobros y alquiler de campos. | Disponer de un panel unificado para controlar cupos de equipos (máx. 25 jugadores), validar la duración de contratos de entrenadores (máx. 1 año) y auditar el estado de los pagos mensuales. |
-| **Jugador** | Deportista / Tutor Legal | **Sí** *(Usuario)* | Alumno inscrito en la academia que participa en las sesiones de entrenamiento, realiza el abono de sus cuotas mensuales y consulta su rendimiento deportivo. | Transparencia total en el registro de sus pagos, garantía de acceso a las sesiones de entrenamiento tras estar al día en la cuota y consulta de su historial de asistencias y calificaciones (0 a 10). |
-| **Entrenador** | Cuerpo Técnico | **No** *(Entidad del Dominio)* | Profesional técnico responsable de la dirección deportiva de los equipos. No interactúa directamente con el software; sus datos y contratos los gestiona el Gestor. | Mantener sus contratos vinculados formalmente a sus equipos asignados y que el Gestor pueda registrar adecuadamente la asistencia y rendimiento de sus jugadores. |
+
+| **Tipo de Actor** | **Rol / Perfil** | **Descripción y Situación Actual** | **Expectativas del Nuevo Sistema** |
+| :--- | :--- | :--- | :--- |
+| **Usuario** | Jugador | Alumno inscrito en la escuela formativa que pertenece a una categoría concreta y realiza el abono periódico de las cuotas mensuales[cite: 2]. | Transparencia total en el estado de sus pagos/cuotas, asignación garantizada de sus horarios y campos de entrenamiento, y correcta categorización por edad[cite: 2]. |
+| **Gestor** | Directivo de la academia | Encargado de la gestión global de la academia, del alquiler de los campos donde se realizan las sesiones de entrenamiento[cite: 2]. | Disponer de un panel centralizado para gestionar altas de jugadores, automatizar el control de cobros e impagos, asignar pistas sin solapamientos y supervisar los cupos por equipo[cite: 2]. |
 
 ## 4. Catálogo de requisitos
 
