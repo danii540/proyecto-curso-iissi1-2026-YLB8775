@@ -17,7 +17,31 @@ Gestión Deportiva y Académica: Coordinación de equipos federados y de escuela
 
 ## 2. Glosario de términos
 
-- Términos específicos del dominio del problema, ordenados alfabéticamente. Se valorará la presencia de información multimedia.
+Los términos específicos empleados en el dominio del problema son los siguientes:
+
+-Campo: Instalación deportiva gestionada por el Gestor en la que se desarrollan los entrenamientos o alquileres de la academia.
+
+-Contrato: Clase de asociación que formaliza la vinculación entre un Entrenador y un Equipo, definiendo sus fechas de inicio y fin (fechaInicio, fechaFin) con una duración máxima de 1 año.
+
+-Entrenador: Personal técnico responsable de dirigir las sesiones de entrenamiento de uno o más equipos, registrado con su nombre, teléfono y DNI.
+
+-Equipo: Agrupación deportiva caracterizada por un grupo y una temporada, compuesta por un máximo absoluto de 25 jugadores.
+
+-Gestor: Perfil administrativo derivado de la clase Usuario, encargado del alquiler de campos y la supervisión operativa del club.
+
+-Jugador: Deportista derivado de la clase Usuario inscrito en la academia que participa en los entrenamientos y realiza el abono de cuotas.
+
+-Pago: Registro transaccional que contiene el importe y la fecha abonados por el jugador, obligatorio para poder participar en las sesiones de entrenamiento.
+
+-Participación: Clase de asociación entre Jugador y Sesión de Entrenamiento que registra la asistencia física (fechaAcude) y la evaluación deportiva (Rendimiento).
+
+-Rendimiento: Calificación cuantitativa asignada a un jugador en una sesión de entrenamiento, acotada estrictamente en el rango de 0 a 10.
+
+-Sesión de Entrenamiento: Bloque de tiempo acotado por fecha y hora de inicio (fechaHoraInicio) y de fin (fechaHoraFin) en el que se desarrolla la actividad deportiva de un equipo.
+
+-Usuario: Clase base abstracta de la que heredan obligatoriamente Jugador y Gestor {completa, disjunta}, encargada de almacenar las credenciales de acceso (email y contraseña).
+
+
 
 ## 3. Visión general del sistema
 
