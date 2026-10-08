@@ -2,10 +2,10 @@
 
 ## Miembros del grupo LX-XXX-X (sustituir)
 
-1. Apellidos, Nombre
-1. Apellidos, Nombre
-1. Apellidos, Nombre
-1. Apellidos, Nombre
+1. Urbano Castro, Ignacio
+1. Lorenzo Raposo, Daniel
+1. Romero Gómez, Rafael
+1. Camargo Romero, Julian
 
 ## 1. Introducción al problema
 
