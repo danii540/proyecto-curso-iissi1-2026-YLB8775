@@ -19,13 +19,13 @@ Gestión Deportiva y Académica: Coordinación de equipos federados y de escuela
 
 Los términos específicos empleados en el dominio del problema son los siguientes:
 
-* **Campo:** Instalación deportiva gestionada por el Gestor en la que se desarrollan los entrenamientos o alquileres de la academia.
+* **Campo:** Instalación deportiva gestionada por el Gestor en la que se desarrollan los entrenamientos de la academia.
 
 * **Contrato:** Clase de asociación que formaliza la vinculación entre un Entrenador y un Equipo, definiendo sus fechas de inicio y fin (fechaInicio, fechaFin) con una duración máxima de 1 año.
 
 * **Entrenador:** Personal técnico responsable de dirigir las sesiones de entrenamiento de uno o más equipos, registrado con su nombre, teléfono y DNI.
 
-* **Equipo:** Agrupación deportiva caracterizada por un grupo y una temporada, compuesta por un máximo absoluto de 25 jugadores.
+* **Equipo:** Agrupación deportiva caracterizada por un grupo y una temporada, compuesta por un máximo de 25 jugadores.
 
 * **Gestor:** Perfil administrativo derivado de la clase Usuario, encargado del alquiler de campos y la supervisión operativa del club.
 
