@@ -48,20 +48,19 @@ Los términos específicos empleados en el dominio del problema son los siguient
 ### 3.1. Requisitos generales
 
 
-El sistema de gestión de la academia de fútbol se basa en la gestión administrativa y el control de instalaciones. Los requisitos generales que definen el alcance del sistema son los siguientes:
+El sistema de gestión de la academia de fútbol se basa en la gestión administrativa y de instalaciones. Los requisitos generales que definen el alcance del sistema son los siguientes:
 
-* **Gestión Unificada de Usuarios y Autenticación:** Implementación de una arquitectura de usuarios jerárquica `{completa, disjunta}` basada en la entidad base **Usuario** (credenciales de `email` y `contraseña`), especializándose de manera obligatoria y exclusiva en los perfiles **Jugador** y **Gestor**.
+* **Gestión Unificada de Usuarios y Autenticación:** Implementación de una arquitectura de usuarios jerárquica `{completa, disjunta}` basada en la entidad base **Usuario** (credenciales de `email` y `contraseña`), especializándose de manera exclusiva en los perfiles **Jugador** y **Gestor**.
 
-* **Control Financiero y Condicionamiento de Acceso (R01):** Verificación del cumplimiento del abono mensual (**Pago:** `importe`, `fecha`) por parte del **Jugador** como requisito indispensable para quedar habilitado y participar en las sesiones de entrenamiento.
+* **Control Financiero y Condicionamiento de Acceso (R01):** Verificación del cumplimiento del abono mensual (Pago: `importe`, `fecha`) por parte del Jugador como requisito indispensable para quedar habilitado y participar en las sesiones de entrenamiento.
 
-* **Gestión de Plantillas y Control de Cupos (R02):** Administración de los equipos (**Equipo:** `grupo`, `temporada`) y supervisión estricta de la relación con los jugadores, garantizando que un equipo no supere el límite máximo de 25 jugadores.
+* **Gestión de Plantillas y Control de Cupos (R02):** Administración de los equipos (Equipo: `grupo`, `temporada`) y supervisión estricta de la relación con los jugadores, garantizando que un equipo no supere el límite máximo de 25 jugadores.
   
-* **Gestión Contractual del Cuerpo Técnico (R03):** Registro y control de la vinculación entre entrenadores y equipos mediante la entidad intermedia **Contrato** (`fechaInicio`, `fechaFin`), limitando la duración máxima de cada contrato a 1 año.
+* **Gestión Contractual del Cuerpo Técnico (R03):** Registro y control de la vinculación entre entrenadores y equipos mediante la entidad intermedia Contrato (`fechaInicio`, `fechaFin`), limitando la duración máxima de cada contrato a 1 año.
   
-* **Planificación y Evaluación Deportiva (R03):** Programación de sesiones de entrenamiento (**SesionEntrenamiento:** `fechaHoraInicio`, `fechaHoraFin`) y registro individualizado del rendimiento del jugador a través de la clase de asociación **Partición** (`fechaAcude`, `Rendimiento`), asegurando que las calificaciones se mantengan estrictamente en el rango numérico de 0 a 10.
+* **Planificación y Evaluación Deportiva (R03):** Programación de sesiones de entrenamiento (SesionEntrenamiento: `fechaHoraInicio`, `fechaHoraFin`) y registro individualizado del rendimiento del jugador a través de la clase de asociación Partición (`fechaAcude`, `Rendimiento`), asegurando que las calificaciones se mantengan estrictamente en el rango numérico de 0 a 10.
   
-* **Administración de Instalaciones:** Gestión del catálogo de campos deportivos (**Campo**) por parte del perfil **Gestor**, permitiendo su control y reserva operativa.
-
+* **Administración de Instalaciones:** Gestión del catálogo de campos deportivos (Campo) por parte del perfil Gestor , permitiendo su control.
 
 
 
