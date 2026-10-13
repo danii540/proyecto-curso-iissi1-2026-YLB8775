@@ -1,6 +1,6 @@
 # ACADEMIA DE FÚTBOL "Gol & Formación"
-
-## Miembros del grupo LX-XXX-X (sustituir)
+ 
+## Miembros del grupo L6-DF-8 
 
 1. Urbano Castro, Ignacio
 1. Lorenzo Raposo, Daniel
