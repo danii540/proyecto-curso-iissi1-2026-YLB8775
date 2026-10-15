@@ -378,6 +378,26 @@ Un equipo tendrá un máximo de 25 jugadores.
 #### R.N.03. Duración máxima del contrato
 Los contratos tendrán una duración máxima de 1 año.
 
+#### R.N.04. Rango de la nota de rendimiento
+La calificación cuantitativa asignada al jugador en la ficha de la sesión de entrenamiento (`Partición`) debe acotarse estrictamente a una escala numérica dentro del rango de 0 a 10.
+
+#### R.N.05. Incompatibilidad de contratos simultáneos
+Un entrenador no podrá mantener dos o más contratos activos cuyas fechas se solapen en el mismo periodo para distintos equipos dentro del club.
+
+#### R.N.06. Exclusividad de uso de campos deportivos
+Un mismo campo deportivo no puede tener asignada más de una sesión de entrenamiento o evento en la misma fecha y franja horaria.
+
+#### R.N.07. Pertenencia única de equipo por temporada
+Un jugador solo podrá estar inscrito y vinculado activamente a un único equipo dentro de la misma temporada deportiva.
+
+#### R.N.08. Ausencia de cuenta de acceso para entrenadores
+La entidad Entrenador no hereda de la clase `Usuario`, por lo que no posee credenciales para acceder a la aplicación. Toda su información y contratos son administrados de forma exclusiva por el perfil `Gestor`.
+
+#### R.N.09. Adecuación de edad por categoría
+La `fechaNacimiento` del jugador debe corresponderse estrictamente con el rango de edad admitido por la categoría deportiva del equipo (Prebenjamín, Benjamín, Alevín, Infantil, Cadete, Juvenil) en la temporada elegida.
+
+#### R.N.10. Plazo límite para modificación de notas
+El registro o actualización de la asistencia y de la nota de rendimiento de una sesión de entrenamiento solo se podrá modificar dentro de un plazo máximo de 7 días naturales posteriores a la fecha de celebración de dicho entrenamiento.
 
 ---
 
