@@ -3,9 +3,9 @@
 ## Miembros del grupo L6-DF-8 
 
 1. Urbano Castro, Ignacio
-1. Lorenzo Raposo, Daniel
-1. Romero Gómez, Rafael
-1. Camargo Moral, Julian
+2. Lorenzo Raposo, Daniel
+3. Romero Gómez, Rafael
+4. Camargo Moral, Julian
 
 ## 1. Introducción al problema
 
@@ -198,68 +198,173 @@ La entidad base Usuario es la encargada de almacenar las credenciales de acceso 
 ### 4.1.1. Requisitos de información
 
 #### R.I.01. Datos de usuario y login
-Como Gestor quiero guardar el correo y la clave de cada persona para que puedan entrar a la app de forma segura.
+**Como** Gestor  
+**Quiero** guardar el correo y la clave de cada persona  
+**Para** que puedan entrar a la app de forma segura.
 
 **Prueba de aceptación**
 * Comprobar que sea obligatorio poner `email` y `contraseña`.
 * Ver que cada cuenta creada sea obligatoriamente de tipo `Jugador` o `Gestor`.
+* Validar el formato correcto del `email` (debe contener arroba y un dominio válido).
+* Validar que la `contraseña` cumpla con los criterios mínimos de seguridad requeridos por la plataforma.
+* Comprobar que el sistema almacene la `contraseña` encriptada o cifrada en la base de datos.
+* Validar que no puedan registrarse dos usuarios distintos con el mismo `email` (campo único).
+* Comprobar que el estado inicial de la cuenta se guarde como activo al momento del registro.
+* Registrar la fecha y hora del último acceso exitoso del usuario al sistema.
+* Permitir la recuperación o restablecimiento de la `contraseña` mediante un token seguro enviado por `email`.
+* Almacenar la marca de tiempo de la fecha de creación de la cuenta de usuario.
+
+---
 
 #### R.I.02. Ficha del jugador
-Como Gestor quiero guardar los datos de los futbolistas para tener la lista completa de los jugadores de la academia.
+**Como** Gestor  
+**Quiero** guardar los datos de los futbolistas  
+**Para** tener la lista completa de los jugadores de la academia.
 
 **Prueba de aceptación**
 * Comprobar que se guardan el `nombre`, `fechaNacimiento` y `telefono`.
 * Comprobar que incluye los datos de inicio de sesión por ser un tipo de `Usuario`.
+* Validar que la `fechaNacimiento` corresponda a una fecha válida y coherente con el rango de edad.
+* Permitir el registro opcional de un número de teléfono de contacto de emergencia o del tutor legal.
+* Registrar el `DNI` o número de identificación oficial del jugador o de su representante.
+* Guardar la dirección postal completa del domicilio habitual del jugador.
+* Permitir almacenar la ruta o archivo de la foto de perfil del jugador.
+* Vincular el historial de equipos, temporadas y posiciones de juego preferidas dentro de su ficha.
+* Almacenar observaciones médicas relevantes (alergias, lesiones previas o certificaciones de salud).
+* Garantizar que al eliminar o desactivar la ficha se conserve la integridad referencial de los pagos e historial.
+
+---
 
 #### R.I.03. Ficha del gestor
-Como Gestor quiero guardar mis datos de contacto para saber quién hace las gestiones administrativas.
+**Como** Gestor  
+**Quiero** guardar mis datos de contacto  
+**Para** saber quién hace las gestiones administrativas.
 
 **Prueba de aceptación**
 * Comprobar que se guardan el `nombre` y `telefono`.
 * Comprobar que incluye los datos de inicio de sesión por ser un tipo de `Usuario`.
+* Guardar el rol administrativo o nivel de permisos específico asignado al gestor dentro del sistema.
+* Registrar el `DNI` o número de identificación oficial del gestor.
+* Permitir la actualización de los datos personales desde el perfil propio del gestor.
+* Guardar el departamento o cargo administrativo asignado dentro de la organización del club.
+* Almacenar la fecha oficial de alta del gestor en el sistema.
+* Permitir la asociación de una firma digitalizada para la validación de documentos oficiales.
+* Controlar que un gestor desactivado no pueda seguir accediendo al sistema ni realizando acciones.
+* Registrar la trazabilidad de las operaciones administrativas vinculadas al identificador del gestor.
+
+---
 
 #### R.I.04. Datos del equipo
-Como Gestor quiero guardar la información de los equipos para tenerlos organizados por grupos y años.
+**Como** Gestor  
+**Quiero** guardar la información de los equipos  
+**Para** tenerlos organizados por grupos y años.
 
 **Prueba de aceptación**
 * Comprobar que se guardan el `grupo` y la `temporada`.
 * Ver que el equipo queda bien conectado con sus jugadores y sus entrenadores.
+* Guardar la denominación oficial o categoría del equipo (ej. Benjamín A, Cadete B).
+* Registrar el número máximo de jugadores (cupo de plantilla) permitidos para el equipo.
+* Generar o asignar un código identificador único por cada equipo y temporada creada.
+* Permitir la asignación de un campo deportivo principal para la realización de sus entrenamientos.
+* Guardar el estado de actividad del equipo (Activo, Inactivo, Finalizado).
+* Consultar la lista completa de jugadores inscritos en la plantilla del equipo en tiempo real.
+* Consultar el historial de entrenadores que han estado asignados al equipo a lo largo del tiempo.
+* Impedir la eliminación directa de un equipo si tiene contratos, entrenamientos o pagos vinculados.
+
+---
 
 #### R.I.05. Datos del entrenador
-Como Gestor quiero guardar la información del entrenador para saber a quién contratamos en el club.
+**Como** Gestor  
+**Quiero** guardar la información del entrenador  
+**Para** saber a quién contratamos en el club.
 
 **Prueba de aceptación**
 * Comprobar que se apuntan el `nombre`, `telefono` y `DNI`.
 * Confirmar que es un dato que maneja el Gestor y que el entrenador no tiene cuenta para entrar a la app.
+* Validar que el formato del `DNI` sea correcto y único en la base de datos de entrenadores.
+* Guardar la dirección de correo electrónico de contacto administrativo del entrenador.
+* Almacenar el nivel de titulación técnica o licencia deportiva acreditada (ej. UEFA A, UEFA Pro).
+* Guardar la dirección de residencia postal del entrenador.
+* Permitir la inclusión de anotaciones o resumen de la trayectoria laboral previa del técnico.
+* Consultar el historial completo de contratos pasados y vigentes asociados al entrenador.
+* Permitir la desactivación lógica del entrenador en el sistema sin eliminar sus registros históricos.
+* Guardar la fecha de registro original del entrenador en el sistema de información.
+
+---
 
 #### R.I.06. Datos del contrato
-Como Gestor quiero guardar las fechas del contrato del entrenador para saber cuándo empieza y cuándo termina su trabajo.
+**Como** Gestor  
+**Quiero** guardar las fechas del contrato del entrenador  
+**Para** saber cuándo empieza y cuándo termina su trabajo.
 
 **Prueba de aceptación**
 * Comprobar que se guardan la `fechaInicio` y `fechaFin` al unir al entrenador con el equipo.
+* Guardar la vinculación explícita entre el identificador del entrenador y el identificador del equipo.
+* Validar que la `fechaFin` sea estrictamente posterior a la `fechaInicio`.
+* Registrar la modalidad o tipo de contrato establecido con el entrenador.
+* Almacenar el estado actual del contrato (Vigente, Finalizado, Cancelado, Pendiente de Firma).
+* Permitir adjuntar o guardar la ruta del documento del contrato digitalizado en formato PDF.
+* Registrar observaciones, condiciones o cláusulas especiales redactadas en la vinculación.
+* Almacenar el importe económico o retribución acordada dentro del marco contractual.
+* Guardar la fecha, hora y el usuario gestor responsable del alta o modificación del contrato.
+* Controlar que no existan contratos activos e incompatibles para el mismo entrenador en idénticas fechas.
 
+---
 
 #### R.I.07. Horarios del entrenamiento
-Como Gestor quiero guardar los horarios de los entrenamientos para organizar la agenda del club.
+**Como** Gestor  
+**Quiero** guardar los horarios de los entrenamientos  
+**Para** organizar la agenda del club.
 
 **Prueba de aceptación**
 * Comprobar que se guardan la `fechaHoraInicio` y la `fechaHoraFin`.
 * Ver a qué equipo le toca entrenar en esa hora.
+* Validar que la `fechaHoraFin` sea cronológicamente posterior a la `fechaHoraInicio`.
+* Vincular cada sesión de entrenamiento con la ficha del campo deportivo donde se imparte.
+* Guardar el tipo de sesión o descripción técnica del trabajo planificado.
+* Registrar el estado de la sesión programada (Pendiente, Realizada, Suspendida, Cancelada).
+* Verificar que no existan solapamientos de horario para un mismo equipo en el mismo rango de tiempo.
+* Verificar que no existan reservas duplicadas del mismo campo deportivo a la misma hora.
+* Permitir guardar anotaciones o contenidos tácticos previstos para la sesión de entrenamiento.
+* Registrar el usuario gestor que creó o modificó el horario del entrenamiento en el calendario.
+
+---
 
 #### R.I.08. Datos de asistencia y notas (Partición)
-Como Gestor quiero guardar si el jugador fue al entreno y su nota para saber cómo evoluciona en el campo.
+**Como** Gestor  
+**Quiero** guardar si el jugador fue al entreno y su nota  
+**Para** saber cómo evoluciona en el campo.
 
 **Prueba de aceptación**
 * Comprobar que se guarda el día que fue (`fechaAcude`) y la nota obtenida (`Rendimiento`).
+* Vincular cada registro de forma unívoca al ID del jugador y al ID de la sesión de entrenamiento.
+* Registrar el estado explícito de la asistencia (Asiste, Falta Justificada, Falta Injustificada).
+* Guardar observaciones cualitativas o comentarios del cuerpo técnico sobre el desempeño en la sesión.
+* Validar que la nota de `Rendimiento` cumpla con el rango numérico permitido por la normativa del club.
+* Comprobar que el sistema impida duplicar el registro de asistencia de un mismo jugador en la misma sesión.
+* Registrar la fecha y hora exacta en la que se grabó la asistencia y la evaluación en el sistema.
+* Guardar la identidad del usuario (gestor o técnico) que registró o modificó la nota del entrenamiento.
+* Garantizar que la información persistida en la partición se refleje de inmediato en la ficha del jugador.
+* Permitir la consulta del historial acumulado de asistencias y notas por equipo, mes o temporada.
 
+---
 
 #### R.I.09. Datos del pago
-Como Gestor quiero guardar los cobros de las cuotas para saber quién ha pagado y quién debe dinero.
+**Como** Gestor  
+**Quiero** guardar los cobros de las cuotas  
+**Para** saber quién ha pagado y quién debe dinero.
 
 **Prueba de aceptación**
 * Comprobar que se guardan el `importe` (dinero) y la `fecha` del pago.
 * Ver a qué jugador le pertenece ese recibo.
-
+* Guardar el concepto descriptivo del cobro (ej. Cuota Mensual Octubre, Matrícula, Equipación).
+* Registrar el estado actual del recibo de pago (Pagado, Pendiente, Reembolsado, Vencido).
+* Almacenar el método de pago utilizado (Efectivo, Tarjeta, Transferencia, Domiciliación).
+* Guardar la fecha límite de vencimiento para la liquidación del importe adeudado.
+* Asignar y guardar un código de recibo o número de referencia único por transacción.
+* Permitir asociar la ruta o archivo en PDF del justificante o comprobante de pago emitido.
+* Registrar la fecha, hora y el usuario gestor que dio de alta o validó el recibo en el sistema.
+* Validar que el valor del `importe` sea un valor numérico positivo mayor que cero.
 ---
 
 ### 4.1.2. Reglas de negocio
