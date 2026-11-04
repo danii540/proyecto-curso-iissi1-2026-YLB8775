@@ -19,400 +19,331 @@ Gestión Deportiva y Académica: Coordinación de equipos federados y de escuela
 
 Los términos específicos empleados en el dominio del problema son los siguientes:
 
-* **Campo:** Instalación deportiva gestionada por el Gestor en la que se desarrollan los entrenamientos de la academia.
+* **Campo:** Instalación deportiva que el Gestor alquila para la realización de entrenamientos. El modelo conceptual solo recoge sus atributos `Item 1`, `Item 2` e `Item 3`.
 
-* **Gestor:** Perfil administrativo derivado de la clase Usuario, encargado del alquiler de campos y la supervisión operativa del club.
-  
-* **Participación:** Clase de asociación entre Jugador y Sesión de Entrenamiento que registra la asistencia física (fechaAcude) y la evaluación deportiva (Rendimiento).
+* **Contrato:** Clase de asociación entre Equipo y Entrenador que registra `fechaInicio` y `fechaFin`. Su duración máxima es de un año.
 
-* **Rendimiento:** Calificación cuantitativa asignada a un jugador en una sesión de entrenamiento, acotada estrictamente en el rango de 0 a 10.
+* **Equipo:** Grupo deportivo identificado por `grupo` y `temporada`. Un equipo puede tener hasta 25 jugadores y se asocia con entrenadores mediante contratos.
 
-* **Usuario:** Clase base abstracta de la que heredan obligatoriamente Jugador y Gestor {completa, disjunta}, encargada de almacenar las credenciales de acceso (email y contraseña).
+* **Entrenador:** Persona identificada por `nombre`, `telefono` y `DNI`, vinculada a equipos mediante contratos. No hereda de Usuario.
 
+* **Gestor:** Perfil derivado de Usuario, con los atributos `nombre` y `telefono`. Alquila campos.
 
+* **Jugador:** Perfil derivado de Usuario, con los atributos `nombre`, `fechaNacimiento` y `telefono`. Realiza pagos, juega en equipos, asiste a sesiones de entrenamiento y puede ser entrenado por un Entrenador.
+
+* **Pago:** Registro asociado a un Jugador que recoge `importe` y `fecha`. El pago mensual debe estar realizado para que el jugador participe en el entrenamiento.
+
+* **Participación:** Clase de asociación entre Jugador y SesionEntrenamiento que registra `fechaAcude` y `Rendimiento`. El rendimiento debe estar entre 0 y 10.
+
+* **SesionEntrenamiento:** Sesión con `fechaHoraInicio` y `fechaHoraFin`, relacionada con un equipo y con las participaciones de los jugadores.
+
+* **Usuario:** Clase base con los atributos `email` y `contraseña`. La especialización en Jugador y Gestor es completa y disjunta: todo Usuario pertenece a uno de esos dos tipos.
 
 ## 3. Visión general del sistema
 
 ### 3.1. Requisitos generales
 
+El sistema de gestión de la academia de fútbol administra usuarios, equipos, entrenamientos, pagos y campos deportivos. El modelo conceptual establece las siguientes relaciones y restricciones:
 
-El sistema de gestión de la academia de fútbol se basa en la gestión administrativa y de instalaciones. Los requisitos generales que definen el alcance del sistema son los siguientes:
+* **Gestión de usuarios:** Usuario se especializa en Jugador y Gestor mediante una jerarquía completa y disjunta. Ambos perfiles comparten las credenciales `email` y `contraseña`.
 
-* **Gestión de Usuarios:** Implementación de una arquitectura de usuarios jerárquica `{completa, disjunta}` basada en la entidad base **Usuario** (credenciales de `email` y `contraseña`), especializándose de manera exclusiva en los perfiles **Jugador** y **Gestor**.
+* **Control de pagos:** Cada Pago registra el `importe` y la `fecha`, y está asociado a un Jugador. El pago mensual debe estar realizado para que el jugador participe en los entrenamientos.
 
-* **Control de Acceso (R01):** Verificación del cumplimiento del abono mensual (Pago: `importe`, `fecha`) por parte del Jugador como requisito indispensable para quedar habilitado y participar en las sesiones de entrenamiento.
+* **Gestión de equipos:** Equipo se identifica mediante `grupo` y `temporada`. Los jugadores juegan en equipos y cada equipo tiene un máximo de 25 jugadores.
 
-* **Gestión de Plantillas (R02):** Administración de los equipos (Equipo: `grupo`, `temporada`) y supervisión estricta de la relación con los jugadores, garantizando que un equipo no supere el límite máximo de 25 jugadores.
-  
-* **Gestión del Cuerpo Técnico (R03):** Registro y control de la vinculación entre entrenadores y equipos mediante la entidad intermedia Contrato (`fechaInicio`, `fechaFin`), limitando la duración máxima de cada contrato a 1 año.
-  
-* **Planificación Deportiva (R03):** Programación de sesiones de entrenamiento (SesionEntrenamiento: `fechaHoraInicio`, `fechaHoraFin`) y registro individualizado del rendimiento del jugador a través de la clase de asociación Partición (`fechaAcude`, `Rendimiento`), asegurando que las calificaciones se mantengan estrictamente en el rango numérico de 0 a 10.
-  
-* **Administración de Instalaciones:** Gestión del catálogo de campos deportivos (Campo) por parte del perfil Gestor , permitiendo su control.
+* **Gestión de entrenamientos:** Las sesiones registran `fechaHoraInicio` y `fechaHoraFin`. La participación de cada jugador en una sesión se registra mediante la clase de asociación Participación, con `fechaAcude` y `Rendimiento`.
 
+* **Gestión de entrenadores:** Los equipos se relacionan con los entrenadores mediante Contrato, que registra `fechaInicio` y `fechaFin`. Cada contrato puede durar como máximo un año.
 
+* **Gestión de campos:** El Gestor alquila los campos deportivos, que el modelo identifica con los atributos `Item 1`, `Item 2` e `Item 3`.
+
+* **Evaluación deportiva:** El rendimiento de cada jugador en una sesión debe estar entre 0 y 10.
 
 ### 3.2. Usuarios del sistema
 
-Nuestro sistema clasifica a los usuarios que interactúan directamente con la plataforma mediante una jerarquía de herencia completa y disjunta derivada de la clase base abstracta Usuario.
+El sistema distingue dos tipos de usuarios: Jugador y Gestor. Ambos heredan de Usuario, que almacena `email` y `contraseña`. La especialización es completa y disjunta, por lo que todo Usuario pertenece a uno de esos perfiles.
 
-La entidad base Usuario es la encargada de almacenar las credenciales de acceso al sistema (email y contraseña). De esta clase abstracta se derivan de forma obligatoria y exclusiva {completa, disjunta} los dos únicos perfiles con acceso a la plataforma: el Jugador y el Gestor. Esta arquitectura garantiza que todo usuario en el sistema pertenezca estrictamente a uno de estos dos tipos.
-
-| **Tipo de Actor** | **Rol / Perfil** | **Descripción y Situación Actual** | **Expectativas del Nuevo Sistema** |
-| :--- | :--- | :--- | :--- |
-| **Usuario** | Jugador | Alumno inscrito en la escuela formativa que pertenece a una categoría concreta y realiza el abono periódico de las cuotas mensuales. | Transparencia total en el estado de sus pagos/cuotas, asignación garantizada de sus horarios y campos de entrenamiento, y correcta categorización por edad. |
-| **Gestor** | Directivo de la academia | Encargado de la gestión global de la academia, del alquiler de los campos donde se realizan las sesiones de entrenamiento. | Disponer de un panel centralizado para gestionar altas de jugadores, automatizar el control de cobros e impagos, asignar pistas sin solapamientos y supervisar los cupos por equipo.. |
+| **Tipo de actor** | **Rol / perfil** | **Descripción** |
+| :--- | :--- | :--- |
+| **Jugador** | Alumno de la academia | Tiene los atributos `nombre`, `fechaNacimiento` y `telefono`. Realiza pagos, juega en equipos y participa en sesiones de entrenamiento. |
+| **Gestor** | Responsable administrativo | Tiene los atributos `nombre` y `telefono`. Se encarga de alquilar campos y gestionar la actividad de la academia. |
 
 ## 4. Catálogo de requisitos
 
-# 4. Catálogo de requisitos
+### 4.1. Requisitos funcionales
 
-## 4.1. Requisitos funcionales
+### R.F.01. Registrar los pagos de un jugador
 
-### R.F.01. Meter un jugador en un equipo
 **Como** Gestor
 
-**Quiero** apuntar y vincular a un jugador dentro de un equipo 
+**Quiero** registrar el importe y la fecha de los pagos de cada jugador
 
-**Para** ir formando la plantilla de la temporada.
+**Para** controlar el abono mensual de la academia.
 
 **Prueba de aceptación**
-* Comprobar que el jugador existe en el sistema y elegir el equipo indicando su grupo y su temporada.
-* Ver cuántos jugadores hay ya apuntados en el equipo antes de confirmar la entrada.
-* Validar que la categoría de edad del jugador coincida con el rango admitido por el equipo, grupo y temporada seleccionados.
-* Permitir buscar al jugador en el sistema mediante filtros rápidos por DNI, nombre completo o número de ficha.
-* Comprobar que el sistema no permita vincular de forma duplicada al mismo jugador en el mismo equipo y temporada.
-* Mostrar una advertencia o alerta si el equipo alcanza o supera el cupo máximo de plantilla configurado.
-* Asignar de forma automática el estado "Activo" a la vinculación del jugador tras confirmar el registro.
-* Registrar la fecha, la hora y el usuario gestor que realizó la asignación en el módulo de auditoría.
-* Permitir cancelar la operación de vinculación en cualquier momento previo a la confirmación sin guardar cambios.
-* Visualizar un mensaje de confirmación con el resumen de la plantilla actualizada tras guardar el registro.
-  
+
+* Registrar para cada Pago el `importe` y la `fecha`.
+* Asociar cada pago con el Jugador correspondiente.
+* Comprobar que el jugador ha realizado el pago mensual antes de permitirle participar en el entrenamiento.
 
 ---
 
-### R.F.02. Apuntar asistencia y nota del entrenamiento
-**Como** Gestor 
+### R.F.02. Gestionar los equipos y sus jugadores
 
-**Quiero** registrar si un jugador ha venido a la sesión de entrenamiento
+**Como** Gestor
 
-**Para** calcular su nota de rendimiento.
+**Quiero** gestionar los equipos por grupo y temporada
+
+**Para** organizar a los jugadores de la academia.
 
 **Prueba de aceptación**
-* Comprobar que el jugador tiene pagada la cuota de ese mes antes del entrenamiento.
-* Ver que la nota que le ponemos se quede guardada correctamente en su ficha del entrenamiento (`Partición`).
-* Se debe aplicar la regla de negocio **R.N.01**.
-* Se debe aplicar la regla de negocio **R.N.04**.
-* Permitir registrar el estado de asistencia individual o masivo (Asiste, Falta Justificada, Falta Injustificada).
-* Bloquear el registro de notas o mostrar una alerta visible si el sistema detecta cuotas o pagos adeudados.
-* Verificar que la nota registrada quede vinculada de forma unívoca a la sesión de entrenamiento y a la fecha correspondiente.
-* Ofrecer un campo de observaciones cualitativas opcional para anotaciones del cuerpo técnico sobre el desempeño.
-* Guardar la identidad del usuario (gestor o técnico) y la marca de tiempo del registro o última modificación realizada.
-* Permitir la modificación o corrección de la nota únicamente dentro del plazo temporal permitido por la normativa.
+
+* Registrar el `grupo` y la `temporada` de cada Equipo.
+* Asociar los jugadores con sus equipos.
+* Comprobar que un equipo no supere el máximo de 25 jugadores.
 
 ---
 
-### R.F.03. Hacer el contrato de un entrenador
-**Como** Gestor 
+### R.F.03. Registrar sesiones y participaciones
 
-**Quiero** guardar el contrato de un entrenador con un equipo 
+**Como** Gestor
 
-**Para** asignarle oficialmente su grupo.
+**Quiero** registrar las sesiones de entrenamiento y la participación de cada jugador
 
-**Prueba de aceptación**
- * Elegir un entrenador y un equipo poniendo la fecha en que empieza y en la que termina el contrato.
- * Comprobar que el sistema revise las fechas y no deje poner un periodo más largo de lo permitido.
- * Validar que la fecha de inicio del contrato sea strictly anterior a la fecha de finalización.
- * Comprobar que el entrenador seleccionado esté dado de alta previamente y con estado activo en el sistema.
- * Alertar e impedir el registro si el entrenador posee un contrato activo e incompatible en las mismas fechas para otro equipo.
- * Permitir adjuntar o asociar el archivo digitalizado del contrato firmado (en formato PDF o imagen) al registro.
- * Consultar los datos del contrato vigente tanto desde la ficha del entrenador como desde la gestión del equipo.
- * Permitir la edición o actualización de los datos del contrato previo a su firma o activación definitiva.
- * Cambiar de manera automática el estado del contrato a "Finalizado" una vez rebasada la fecha de término indicada.
- * Guardar en la auditoría del sistema la fecha, la hora y el usuario gestor responsable del alta del contrato.
----
-
-### R.F.04. Ver si el pago está al día
-**Como** Jugador 
-
-**Quiero** mirar mis pagos pasados y saber si tengo la cuota al mes 
-
-**Para** estar seguro de que puedo ir a entrenar.
+**Para** llevar el control de la asistencia y del rendimiento deportivo.
 
 **Prueba de aceptación**
-* Entrar a la app y ver la lista de pagos de mi propia cuenta.
-* Ver cada recibo con el dinero pagado y la fecha en que se hizo.
-* Visualizar un indicador gráfico o estado general claro de la cuenta (por ejemplo, "Al día" o "Cuota pendiente").
-* Consultar el detalle de cada recibo con su concepto (cuota mensual, matrícula, equipación) y método de pago utilizado.
-* Mostrar la fecha límite de vencimiento de las cuotas o cobros pendientes de pago.
-* Permitir filtrar y ordenar el historial de recibos por estado (Pagado, Pendiente) o por temporada deportiva.
-* Garantizar que un jugador solo pueda consultar sus propios datos de pago y nunca los de otros miembros.
-* Permitir la descarga o generación en formato PDF del comprobante de pago de cada recibo abonado.
-* Actualizar el estado de los pagos en la app en tiempo real una vez que la administración valida una transacción.
-* Recibir notificaciones en la aplicación sobre el vencimiento próximo de las cuotas mensuales.
+
+* Registrar para cada sesión la `fechaHoraInicio` y la `fechaHoraFin`.
+* Asociar las sesiones con los equipos correspondientes.
+* Registrar la participación de cada Jugador en cada sesión mediante la clase de asociación Participación.
+* Guardar en cada Participación la `fechaAcude` y el `Rendimiento`.
+* Validar que el `Rendimiento` esté entre 0 y 10.
+* Comprobar que el jugador haya realizado el pago mensual antes de participar.
 
 ---
 
-### R.F.05. Ver mi asistencia y mis notas
-**Como** Jugador 
+### R.F.04. Gestionar los contratos de los entrenadores
 
-**Quiero** ver a qué entrenos he ido y qué notas me han puesto 
+**Como** Gestor
 
-**Para** saber cómo voy en el equipo.
+**Quiero** registrar los contratos entre equipos y entrenadores
+
+**Para** dejar constancia de la vinculación y de su duración.
 
 **Prueba de aceptación**
-* Entrar al historial de entrenamientos a los que he asistido.
-* Ver en cada entrenamiento el día que fui (`fechaAcude`) y la nota que me puso el cuerpo técnico (`Rendimiento`).
-* Presentar la lista de entrenamientos ordenada cronológicamente desde la sesión más reciente hasta la más antigua.
-* Consultar las observaciones u anotaciones cualitativas adicionales que el entrenador haya registrado.
-* Distinguir mediante etiquetas o colores el estado de asistencia marcado (Asistió, Falta Justificada, Falta Injustificada).
-* Calcular y mostrar la nota media o promedio acumulado del rendimiento del jugador en el mes o temporada.
-* Permitir filtrar la lista de entrenamientos y evaluaciones por rangos de fechas o meses concretos.
-* Asegurar que la pantalla sea de solo lectura para evitar cualquier intento de modificación de notas o asistencias.
-* Recibir una notificación en la aplicación cada vez que el cuerpo técnico publique las notas de una sesión.
-* Permitir la visualización resumida o exportación del informe de asistencia y rendimiento del jugador.
+
+* Asociar cada Contrato con un Equipo y un Entrenador.
+* Guardar la `fechaInicio` y la `fechaFin` del contrato.
+* Comprobar que la duración del contrato no supere un año.
 
 ---
 
-### R.F.06. Guardar y organizar los campos de fútbol
-**Como** Gestor 
+### R.F.05. Alquilar campos deportivos
 
-**Quiero** dar de alta y cambiar los datos de los campos de fútbol 
+**Como** Gestor
 
-**Para** organizar los espacios de entreno.
+**Quiero** alquilar campos deportivos
+
+**Para** disponer de instalaciones para la actividad de la academia.
 
 **Prueba de aceptación**
-* Guardar los datos de identificación del campo deportivo.
-* Ver la lista completa de campos que gestiona el club.
-* Editar y actualizar cualquier dato descriptivo previamente registrado en la ficha del campo deportivo.
-* Validar que el sistema no permita registrar dos campos deportivos con el mismo nombre o código identificador.
-* Registrar especificaciones técnicas de la instalación (tipo de superficie: césped natural, artificial; iluminación; vestuarios).
-* Modificar y visualizar el estado de operatividad del campo (Disponible, En Mantenimiento, Inhabilitado).
-* Definir la disponibilidad horaria y los días de la semana habilitados para el uso y reserva de cada campo.
-* Bloquear la eliminación o desactivación de un campo deportivo si tiene entrenamientos o partidos asignados activos.
-* Permitir la búsqueda y filtrado de la lista de campos por nombre, tipo de superficie o disponibilidad.
-* Registrar en el historial de auditoría el usuario gestor, la fecha y la hora de cada alta o modificación realizada.
+
+* Asociar los campos alquilados con el Gestor.
+* Registrar y consultar los tres atributos del Campo (`Item 1`, `Item 2` e `Item 3`), cuyos nombres aparecen así en el modelo conceptual.
 
 ---
 
-### 4.1.1. Requisitos de información
+## 4.1.1. Requisitos de información
 
-#### R.I.01. Datos de usuario y login
-**Como** Gestor  
-**Quiero** guardar el correo y la clave de cada persona  
-**Para** que puedan entrar a la app de forma segura.
+#### R.I.01. Datos de usuario
+
+**Como** Gestor
+
+**Quiero** guardar las credenciales de los usuarios
+
+**Para** que puedan identificarse en el sistema.
 
 **Prueba de aceptación**
-* Comprobar que sea obligatorio poner `email` y `contraseña`.
-* Ver que cada cuenta creada sea obligatoriamente de tipo `Jugador` o `Gestor`.
-* Validar el formato correcto del `email` (debe contener arroba y un dominio válido).
-* Validar que la `contraseña` cumpla con los criterios mínimos de seguridad requeridos por la plataforma.
-* Comprobar que el sistema almacene la `contraseña` encriptada o cifrada en la base de datos.
-* Validar que no puedan registrarse dos usuarios distintos con el mismo `email` (campo único).
-* Comprobar que el estado inicial de la cuenta se guarde como activo al momento del registro.
-* Registrar la fecha y hora del último acceso exitoso del usuario al sistema.
-* Permitir la recuperación o restablecimiento de la `contraseña` mediante un token seguro enviado por `email`.
-* Almacenar la marca de tiempo de la fecha de creación de la cuenta de usuario.
+
+* Guardar el `email` y la `contraseña` de cada Usuario.
+* Comprobar que Usuario se especializa en Jugador y Gestor mediante una jerarquía completa y disjunta.
 
 ---
 
-#### R.I.02. Ficha del jugador
-**Como** Gestor  
-**Quiero** guardar los datos de los futbolistas  
-**Para** tener la lista completa de los jugadores de la academia.
+#### R.I.02. Datos del jugador
+
+**Como** Gestor
+
+**Quiero** guardar los datos de los jugadores
+
+**Para** gestionar su participación en la academia.
 
 **Prueba de aceptación**
-* Comprobar que se guardan el `nombre`, `fechaNacimiento` y `telefono`.
-* Comprobar que incluye los datos de inicio de sesión por ser un tipo de `Usuario`.
-* Validar que la `fechaNacimiento` corresponda a una fecha válida y coherente con el rango de edad.
-* Permitir el registro opcional de un número de teléfono de contacto de emergencia o del tutor legal.
-* Registrar el `DNI` o número de identificación oficial del jugador o de su representante.
-* Guardar la dirección postal completa del domicilio habitual del jugador.
-* Permitir almacenar la ruta o archivo de la foto de perfil del jugador.
-* Vincular el historial de equipos, temporadas y posiciones de juego preferidas dentro de su ficha.
-* Almacenar observaciones médicas relevantes (alergias, lesiones previas o certificaciones de salud).
-* Garantizar que al eliminar o desactivar la ficha se conserve la integridad referencial de los pagos e historial.
+
+* Guardar el `nombre`, la `fechaNacimiento` y el `telefono`.
+* Incluir las credenciales heredadas de Usuario.
+* Asociar al jugador con sus pagos, equipos y participaciones en sesiones.
 
 ---
 
-#### R.I.03. Ficha del gestor
-**Como** Gestor  
-**Quiero** guardar mis datos de contacto  
-**Para** saber quién hace las gestiones administrativas.
+#### R.I.03. Datos del gestor
+
+**Como** Gestor
+
+**Quiero** guardar mis datos de perfil
+
+**Para** realizar las gestiones de la academia.
 
 **Prueba de aceptación**
-* Comprobar que se guardan el `nombre` y `telefono`.
-* Comprobar que incluye los datos de inicio de sesión por ser un tipo de `Usuario`.
-* Guardar el rol administrativo o nivel de permisos específico asignado al gestor dentro del sistema.
-* Registrar el `DNI` o número de identificación oficial del gestor.
-* Permitir la actualización de los datos personales desde el perfil propio del gestor.
-* Guardar el departamento o cargo administrativo asignado dentro de la organización del club.
-* Almacenar la fecha oficial de alta del gestor en el sistema.
-* Permitir la asociación de una firma digitalizada para la validación de documentos oficiales.
-* Controlar que un gestor desactivado no pueda seguir accediendo al sistema ni realizando acciones.
-* Registrar la trazabilidad de las operaciones administrativas vinculadas al identificador del gestor.
+
+* Guardar el `nombre` y el `telefono`.
+* Incluir las credenciales heredadas de Usuario.
+* Asociar al Gestor con los campos que alquila.
 
 ---
 
 #### R.I.04. Datos del equipo
-**Como** Gestor  
-**Quiero** guardar la información de los equipos  
-**Para** tenerlos organizados por grupos y años.
+
+**Como** Gestor
+
+**Quiero** guardar la información de los equipos
+
+**Para** organizarlos por grupo y temporada.
 
 **Prueba de aceptación**
-* Comprobar que se guardan el `grupo` y la `temporada`.
-* Ver que el equipo queda bien conectado con sus jugadores y sus entrenadores.
-* Guardar la denominación oficial o categoría del equipo (ej. Benjamín A, Cadete B).
-* Registrar el número máximo de jugadores (cupo de plantilla) permitidos para el equipo.
-* Generar o asignar un código identificador único por cada equipo y temporada creada.
-* Permitir la asignación de un campo deportivo principal para la realización de sus entrenamientos.
-* Guardar el estado de actividad del equipo (Activo, Inactivo, Finalizado).
-* Consultar la lista completa de jugadores inscritos en la plantilla del equipo en tiempo real.
-* Consultar el historial de entrenadores que han estado asignados al equipo a lo largo del tiempo.
-* Impedir la eliminación directa de un equipo si tiene contratos, entrenamientos o pagos vinculados.
+
+* Guardar el `grupo` y la `temporada`.
+* Asociar el Equipo con sus jugadores.
+* Asociar el Equipo con sus entrenadores mediante Contrato.
+* Respetar el máximo de 25 jugadores por equipo.
 
 ---
 
 #### R.I.05. Datos del entrenador
-**Como** Gestor  
-**Quiero** guardar la información del entrenador  
-**Para** saber a quién contratamos en el club.
+
+**Como** Gestor
+
+**Quiero** guardar la información de los entrenadores
+
+**Para** asociarlos con los equipos mediante contratos.
 
 **Prueba de aceptación**
-* Comprobar que se apuntan el `nombre`, `telefono` y `DNI`.
-* Confirmar que es un dato que maneja el Gestor y que el entrenador no tiene cuenta para entrar a la app.
-* Validar que el formato del `DNI` sea correcto y único en la base de datos de entrenadores.
-* Guardar la dirección de correo electrónico de contacto administrativo del entrenador.
-* Almacenar el nivel de titulación técnica o licencia deportiva acreditada (ej. UEFA A, UEFA Pro).
-* Guardar la dirección de residencia postal del entrenador.
-* Permitir la inclusión de anotaciones o resumen de la trayectoria laboral previa del técnico.
-* Consultar el historial completo de contratos pasados y vigentes asociados al entrenador.
-* Permitir la desactivación lógica del entrenador en el sistema sin eliminar sus registros históricos.
-* Guardar la fecha de registro original del entrenador en el sistema de información.
+
+* Guardar el `nombre`, el `telefono` y el `DNI`.
+* Asociar al Entrenador con los equipos mediante Contrato.
+* Comprobar que Entrenador no hereda de Usuario ni dispone de credenciales de acceso según el modelo conceptual.
 
 ---
 
 #### R.I.06. Datos del contrato
-**Como** Gestor  
-**Quiero** guardar las fechas del contrato del entrenador  
-**Para** saber cuándo empieza y cuándo termina su trabajo.
+
+**Como** Gestor
+
+**Quiero** guardar los datos de los contratos
+
+**Para** registrar la relación entre entrenadores y equipos.
 
 **Prueba de aceptación**
-* Comprobar que se guardan la `fechaInicio` y `fechaFin` al unir al entrenador con el equipo.
-* Guardar la vinculación explícita entre el identificador del entrenador y el identificador del equipo.
-* Validar que la `fechaFin` sea estrictamente posterior a la `fechaInicio`.
-* Registrar la modalidad o tipo de contrato establecido con el entrenador.
-* Almacenar el estado actual del contrato (Vigente, Finalizado, Cancelado, Pendiente de Firma).
-* Permitir adjuntar o guardar la ruta del documento del contrato digitalizado en formato PDF.
-* Registrar observaciones, condiciones o cláusulas especiales redactadas en la vinculación.
-* Almacenar el importe económico o retribución acordada dentro del marco contractual.
-* Guardar la fecha, hora y el usuario gestor responsable del alta o modificación del contrato.
-* Controlar que no existan contratos activos e incompatibles para el mismo entrenador en idénticas fechas.
+
+* Guardar `fechaInicio` y `fechaFin`.
+* Asociar cada Contrato con un Equipo y un Entrenador.
+* Comprobar que el contrato no dure más de un año.
 
 ---
 
-#### R.I.07. Horarios del entrenamiento
-**Como** Gestor  
-**Quiero** guardar los horarios de los entrenamientos  
-**Para** organizar la agenda del club.
+#### R.I.07. Datos de la sesión de entrenamiento
+
+**Como** Gestor
+
+**Quiero** guardar los datos de las sesiones
+
+**Para** organizar los entrenamientos de los equipos.
 
 **Prueba de aceptación**
-* Comprobar que se guardan la `fechaHoraInicio` y la `fechaHoraFin`.
-* Ver a qué equipo le toca entrenar en esa hora.
-* Validar que la `fechaHoraFin` sea cronológicamente posterior a la `fechaHoraInicio`.
-* Vincular cada sesión de entrenamiento con la ficha del campo deportivo donde se imparte.
-* Guardar el tipo de sesión o descripción técnica del trabajo planificado.
-* Registrar el estado de la sesión programada (Pendiente, Realizada, Suspendida, Cancelada).
-* Verificar que no existan solapamientos de horario para un mismo equipo en el mismo rango de tiempo.
-* Verificar que no existan reservas duplicadas del mismo campo deportivo a la misma hora.
-* Permitir guardar anotaciones o contenidos tácticos previstos para la sesión de entrenamiento.
-* Registrar el usuario gestor que creó o modificó el horario del entrenamiento en el calendario.
+
+* Guardar `fechaHoraInicio` y `fechaHoraFin`.
+* Asociar las sesiones con los equipos.
+* Registrar las participaciones de los jugadores en cada sesión.
 
 ---
 
-#### R.I.08. Datos de asistencia y notas (Partición)
-**Como** Gestor  
-**Quiero** guardar si el jugador fue al entreno y su nota  
-**Para** saber cómo evoluciona en el campo.
+#### R.I.08. Datos de participación y rendimiento
+
+**Como** Gestor
+
+**Quiero** guardar la asistencia y el rendimiento de cada jugador en las sesiones
+
+**Para** consultar su actividad deportiva.
 
 **Prueba de aceptación**
-* Comprobar que se guarda el día que fue (`fechaAcude`) y la nota obtenida (`Rendimiento`).
-* Vincular cada registro de forma unívoca al ID del jugador y al ID de la sesión de entrenamiento.
-* Registrar el estado explícito de la asistencia (Asiste, Falta Justificada, Falta Injustificada).
-* Guardar observaciones cualitativas o comentarios del cuerpo técnico sobre el desempeño en la sesión.
-* Validar que la nota de `Rendimiento` cumpla con el rango numérico permitido por la normativa del club.
-* Comprobar que el sistema impida duplicar el registro de asistencia de un mismo jugador en la misma sesión.
-* Registrar la fecha y hora exacta en la que se grabó la asistencia y la evaluación en el sistema.
-* Guardar la identidad del usuario (gestor o técnico) que registró o modificó la nota del entrenamiento.
-* Garantizar que la información persistida en la partición se refleje de inmediato en la ficha del jugador.
-* Permitir la consulta del historial acumulado de asistencias y notas por equipo, mes o temporada.
+
+* Guardar `fechaAcude` y `Rendimiento` en la clase de asociación Participación.
+* Asociar cada Participación con un Jugador y una SesionEntrenamiento.
+* Validar que `Rendimiento` esté entre 0 y 10.
 
 ---
 
 #### R.I.09. Datos del pago
-**Como** Gestor  
-**Quiero** guardar los cobros de las cuotas  
-**Para** saber quién ha pagado y quién debe dinero.
+
+**Como** Gestor
+
+**Quiero** guardar los datos de los pagos de los jugadores
+
+**Para** controlar el abono mensual.
 
 **Prueba de aceptación**
-* Comprobar que se guardan el `importe` (dinero) y la `fecha` del pago.
-* Ver a qué jugador le pertenece ese recibo.
-* Guardar el concepto descriptivo del cobro (ej. Cuota Mensual Octubre, Matrícula, Equipación).
-* Registrar el estado actual del recibo de pago (Pagado, Pendiente, Reembolsado, Vencido).
-* Almacenar el método de pago utilizado (Efectivo, Tarjeta, Transferencia, Domiciliación).
-* Guardar la fecha límite de vencimiento para la liquidación del importe adeudado.
-* Asignar y guardar un código de recibo o número de referencia único por transacción.
-* Permitir asociar la ruta o archivo en PDF del justificante o comprobante de pago emitido.
-* Registrar la fecha, hora y el usuario gestor que dio de alta o validó el recibo en el sistema.
-* Validar que el valor del `importe` sea un valor numérico positivo mayor que cero.
+
+* Guardar `importe` y `fecha`.
+* Asociar cada Pago con el Jugador correspondiente.
+* Comprobar que el pago mensual esté realizado antes de la participación del jugador en el entrenamiento.
+
+---
+
+#### R.I.10. Datos del campo
+
+**Como** Gestor
+
+**Quiero** guardar los datos de los campos deportivos
+
+**Para** gestionar su alquiler.
+
+**Prueba de aceptación**
+
+* Asociar cada Campo con el Gestor que lo alquila.
+* Registrar y consultar los atributos `Item 1`, `Item 2` e `Item 3`, tal como aparecen en el modelo conceptual.
+
 ---
 
 ### 4.1.2. Reglas de negocio
 
-#### R.N.01. Hay que pagar para entrenar
-El pago mensual deberá estar realizado por el jugador para participar en el entrenamiento.
+#### R.N.01. Pago mensual para participar
 
-#### R.N.02. Límite de jugadores en el equipo
-Un equipo tendrá un máximo de 25 jugadores.
+El pago mensual debe estar realizado para que un Jugador participe en el entrenamiento.
+
+#### R.N.02. Máximo de jugadores por equipo
+
+Un Equipo tendrá un máximo de 25 jugadores.
 
 #### R.N.03. Duración máxima del contrato
-Los contratos tendrán una duración máxima de 1 año.
 
-#### R.N.04. Rango de la nota de rendimiento
-La calificación cuantitativa asignada al jugador en la ficha de la sesión de entrenamiento (`Partición`) debe acotarse estrictamente a una escala numérica dentro del rango de 0 a 10.
+Cada Contrato tendrá una duración máxima de un año.
 
-#### R.N.05. Incompatibilidad de contratos simultáneos
-Un entrenador no podrá mantener dos o más contratos activos cuyas fechas se solapen en el mismo periodo para distintos equipos dentro del club.
+#### R.N.04. Rango del rendimiento
 
-#### R.N.06. Exclusividad de uso de campos deportivos
-Un mismo campo deportivo no puede tener asignada más de una sesión de entrenamiento o evento en la misma fecha y franja horaria.
-
-#### R.N.07. Pertenencia única de equipo por temporada
-Un jugador solo podrá estar inscrito y vinculado activamente a un único equipo dentro de la misma temporada deportiva.
-
-#### R.N.08. Ausencia de cuenta de acceso para entrenadores
-La entidad Entrenador no hereda de la clase `Usuario`, por lo que no posee credenciales para acceder a la aplicación. Toda su información y contratos son administrados de forma exclusiva por el perfil `Gestor`.
-
-#### R.N.09. Adecuación de edad por categoría
-La `fechaNacimiento` del jugador debe corresponderse estrictamente con el rango de edad admitido por la categoría deportiva del equipo (Prebenjamín, Benjamín, Alevín, Infantil, Cadete, Juvenil) en la temporada elegida.
-
-#### R.N.10. Plazo límite para modificación de notas
-El registro o actualización de la asistencia y de la nota de rendimiento de una sesión de entrenamiento solo se podrá modificar dentro de un plazo máximo de 7 días naturales posteriores a la fecha de celebración de dicho entrenamiento.
+El valor de `Rendimiento` registrado en una Participación debe estar entre 0 y 10.
 
 ---
 
 ## 4.2. Mapa de historias de usuario (opcional)
 
-| ID Historia | Rol / Actor | Servicio / Acción | R.F. Relacionado | Regla de Negocio |
-| :--- | :--- | :--- | :---: | :---: |
-| **HU-01** | Gestor | Dar de alta y cambiar datos de los campos de fútbol | R.F.06 | - |
-| **HU-02** | Gestor | Hacer el contrato del entrenador para un equipo | R.F.03 | R.N.03 |
-| **HU-03** | Gestor | Apuntar jugadores en las plantillas de los equipos | R.F.01 | R.N.02 |
-| **HU-04** | Jugador | Ver los pagos hechos y saber si la cuota está al día | R.F.04 | R.N.01 |
-| **HU-05** | Jugador | Ver los entrenos a los que ha ido y sus notas | R.F.05 | R.N.04 |
-| **HU-06** | Gestor | Apuntar la asistencia y poner la nota en un entreno | R.F.02 | R.N.01, R.N.04 |
-
----
+| ID Historia | Rol / Actor | Servicio / Acción | Requisito relacionado | Regla de negocio |
+| :--- | :--- | :--- | :--- | :--- |
+| **HU-01** | Gestor | Registrar y consultar los pagos de los jugadores | R.F.01 | R.N.01 |
+| **HU-02** | Gestor | Organizar equipos y jugadores por grupo y temporada | R.F.02 | R.N.02 |
+| **HU-03** | Gestor | Registrar sesiones, asistencias y rendimiento | R.F.03 | R.N.01, R.N.04 |
+| **HU-04** | Gestor | Registrar contratos de entrenadores y equipos | R.F.04 | R.N.03 |
+| **HU-05** | Gestor | Gestionar el alquiler de campos deportivos | R.F.05 | - |
 
 ## 4.3. Requisitos no funcionales (opcional)
 
@@ -425,29 +356,217 @@ Como Gestor quiero que el sistema me avise o me bloquee si pongo mal una nota o 
 
 -- fin entregable 1 --
 
-## 5. Modelo conceptual
+#5. Modelo conceptual y 6. Matriz de trazabilidad
 
-### 5.1. Diagramas de clases UML
+## Base y alcance
 
-- con restricciones.
+Este apartado se ha elaborado a partir de `modelo_conceptual_club_1.drawio`. El diagrama presenta las clases `Usuario`, `Jugador`, `Gestor`, `Equipo`, `Pago`, `SesionEntrenamiento`, `Partición` y el enumerado `Estado`. Las reglas anotadas en el modelo son R01–R04. No se adjuntó un catálogo independiente de requisitos RI/RF/RN, así que la matriz usa las reglas del propio diagrama como filas y no atribuye requisitos inventados.
 
-### 5.2. Escenarios de prueba
+## 5.1. Diagrama de clases UML con restricciones
 
-- con descripción textual y diagrama de objetos UML.
+El siguiente PlantUML normaliza el modelo para que se pueda generar como diagrama. La multiplicidad de `Jugador–Equipo` aparece como `25` y `*` en el dibujo, pero su ubicación no queda inequívoca al extraer el archivo; se interpreta aquí como un máximo de 25 jugadores por equipo y un equipo por jugador. Conviene confirmar esta decisión con el autor del modelo.
 
-## 6. Matrices de trazabilidad
+```plantuml
+@startuml
+skinparam classAttributeIconSize 0
 
-- Matriz de trazabilidad entre los elementos del modelo conceptual y los requisitos.
+abstract class Usuario {
+  email
+  contraseña
+  nombre
+  telefono
+}
+class Jugador {
+  fechaNacimiento
+}
+class Gestor
+class Equipo {
+  grupo
+  temporada
+}
+class Pago {
+  importe
+  fecha
+}
+class SesionEntrenamiento {
+  fechaHoraInicio
+  fechaHoraFin
+}
+class "Partición" as Particion {
+  fechaAcude
+  Rendimiento
+}
+enum Estado {
+  activo
+  inactivo
+}
 
-|       | EntidadX   | AsociaciónX  | RestricciónX  | Entidad2 ...   | 
-|:------|:-----------|:-----------|:-----------|:-----------|
-| RI-1  | X          | X          | X          | X          |
-| RI-2  |            | X          |            | X          |
-| RF-1  |            | X          |            | X          |
-| RF-2  | X          |            | X          | X          |
-| RN-1  |            | X          |            |            |
-| RN-2  | X          | X          | X          |            |
-| ...   |            |            |            |            |
+Usuario <|-- Jugador
+Usuario <|-- Gestor
+note right of Usuario
+  Especialización completa y disjunta:
+  todo Usuario es Jugador o Gestor,
+  y no puede ser ambos.
+end note
+
+Jugador "0..25" -- "1" Equipo : juega en
+Equipo "1" *-- "0..*" SesionEntrenamiento : hace
+Jugador "0..*" -- "0..*" SesionEntrenamiento : entrena / participa
+Jugador "1" -- "0..*" Pago : realiza
+Gestor "0..*" -- "1" Campo : alquila
+class Campo {
+  ubicación
+  estado: Estado
+}
+
+note bottom of Particion
+  R02: 0 <= Rendimiento <= 10
+end note
+note bottom of Pago
+  R01: el pago mensual habilita la participación
+  R03: no se registra sesión/participación
+  si el jugador no tiene pagado el mes corriente
+end note
+note bottom of SesionEntrenamiento
+  R04: solo puede participar un jugador
+  que pertenezca al equipo de la sesión
+end note
+note bottom of Equipo
+  R04 se valida entre jugador, equipo y sesión
+end note
+@enduml
+```
+
+**Restricciones de negocio expresadas en el modelo**
+
+- **R01 – Pago para participar:** el jugador debe realizar el pago mensual correspondiente para poder participar en entrenamientos.
+- **R02 – Rango de rendimiento:** `Partición.Rendimiento` debe estar en el intervalo cerrado `[0, 10]`.
+- **R03 – Pago corriente:** no se registra una participación/sesión para el jugador si no consta el pago del mes corriente. El texto del diagrama dice «introducir una sesión»; se interpreta como registrar la participación del jugador en ella, dado que la sesión es una entidad asociada al equipo.
+- **R04 – Pertenencia al equipo:** un jugador solo puede participar en sesiones del equipo al que pertenece.
+- **Especialización:** `Usuario` se divide en `Jugador` y `Gestor` con conjunto completo y disjunto, tal como indica `{completa, disjunta}`.
+- **Estado de campo:** solo puede tomar los valores `activo` o `inactivo`.
+- **Multiplicidades:** se han reflejado las asociaciones y multiplicidades legibles en el dibujo. La interpretación de `25` requiere confirmación como máximo de jugadores por equipo.
+
+## 5.2. Escenarios de prueba
+
+Los diagramas de objetos siguientes usan sintaxis PlantUML. Los casos negativos describen operaciones rechazadas; los enlaces punteados representan el intento que se valida, no una relación persistida tras el rechazo.
+
+### EP-01 – Participación válida con pago corriente
+
+**Descripción.** Dado un jugador asignado al equipo Azul, con pago de noviembre registrado, se intenta incorporarlo a una sesión de noviembre de ese equipo. La operación se acepta y se registra su participación. Verifica R01, R03 y R04.
+
+```plantuml
+@startuml
+object "ana:Jugador" as ana {
+  email = ana@club.es
+  nombre = Ana
+  fechaNacimiento = 2012-04-15
+}
+object "azul:Equipo" as azul {
+  grupo = Infantil A
+  temporada = 2026-2027
+}
+object "pagoAna:Pago" as pago {
+  importe = 45.00
+  fecha = 2026-11-02
+}
+object "entrenamiento:SesionEntrenamiento" as sesion {
+  fechaHoraInicio = 2026-11-06 18:00
+  fechaHoraFin = 2026-11-06 19:30
+}
+object "asistencia:Partición" as asistencia {
+  fechaAcude = 2026-11-06
+  Rendimiento = 8
+}
+ana -- azul : juega en
+ana -- pago : realiza (mes 2026-11)
+azul -- sesion : hace
+ana -- sesion : participa
+ana -- asistencia
+@enduml
+```
+
+### EP-02 – Rechazo por falta de pago corriente
+
+**Descripción.** Dado un jugador del equipo Azul sin pago registrado para noviembre, se intenta registrar su participación en una sesión de noviembre. La operación se rechaza y no se crea el enlace de participación. Verifica R01 y R03.
+
+```plantuml
+@startuml
+object "ana:Jugador" as ana {
+  email = ana@club.es
+  nombre = Ana
+}
+object "azul:Equipo" as azul
+object "sesionNov:SesionEntrenamiento" as sesion {
+  fechaHoraInicio = 2026-11-06 18:00
+}
+ana -- azul : juega en
+azul -- sesion : hace
+ana ..> sesion : intento de participación [RECHAZADO: sin pago de 2026-11]
+note bottom of sesion
+  No existe objeto/enlace de participación
+  persistido para Ana en esta sesión.
+end note
+@enduml
+```
+
+### EP-03 – Rechazo por equipo distinto
+
+**Descripción.** Dado que Ana pertenece al equipo Azul y la sesión la organiza el equipo Rojo, se intenta registrar a Ana en esa sesión. La operación se rechaza aunque tenga pago al día. Verifica R04.
+
+```plantuml
+@startuml
+object "ana:Jugador" as ana
+object "azul:Equipo" as azul
+object "rojo:Equipo" as rojo
+object "pagoAna:Pago" as pago {
+  fecha = 2026-11-02
+}
+object "sesionRojo:SesionEntrenamiento" as sesion {
+  fechaHoraInicio = 2026-11-07 10:00
+}
+ana -- azul : juega en
+ana -- pago : realiza (mes 2026-11)
+rojo -- sesion : hace
+ana ..> sesion : intento [RECHAZADO: no pertenece a Rojo]
+@enduml
+```
+
+### EP-04 – Rechazo de rendimiento fuera de rango
+
+**Descripción.** Al guardar una participación con `Rendimiento = 11`, la validación la rechaza porque el valor supera 10. Verifica R02.
+
+```plantuml
+@startuml
+object "ana:Jugador" as ana
+object "asistencia:Partición" as asistencia {
+  fechaAcude = 2026-11-06
+  Rendimiento = 11
+}
+ana ..> asistencia : intento de registro [RECHAZADO: Rendimiento debe estar entre 0 y 10]
+note right of asistencia
+  Objeto inválido de prueba:
+  no debe persistirse.
+end note
+@enduml
+```
+
+## 6. Matriz de trazabilidad
+
+Para esta matriz, las columnas agrupan clases/entidades, asociaciones y restricciones identificadas en el modelo. `X` indica que el elemento participa en la regla. `Usuario` se incluye en la trazabilidad de identidad y especialización; los requisitos del club se relacionan con `Jugador`, no con `Gestor`.
+
+| Regla del modelo | Usuario / especialización | Jugador | Equipo | Pago | Sesión | Partición | Asociación juega en | Asociación hace | Asociación entrena | Asociación realiza | R01 pago mensual | R02 rango 0–10 | R03 pago corriente | R04 pertenencia |
+|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+| R01 – Pago mensual habilita participación |  | X |  | X | X |  |  |  | X | X | X |  |  |  |
+| R02 – Rendimiento entre 0 y 10 |  | X |  |  |  | X |  |  |  |  |  | X |  |  |
+| R03 – Sin pago corriente no se registra participación/sesión |  | X |  | X | X |  |  |  | X | X |  |  | X |  |
+| R04 – Solo participa en sesiones del equipo al que pertenece |  | X | X |  | X |  | X | X | X |  |  |  |  | X |
+| Especialización completa y disjunta | X | X |  |  |  |  |  |  |  |  |  |  |  |  |
+
+### Cómo completar la matriz RI/RF/RN solicitada
+
+El ejemplo de la solicitud usa requisitos `RI-*`, `RF-*` y `RN-*`, pero el archivo adjunto no contiene sus definiciones. Para sustituir las filas `R01–R04` por las filas definitivas y trazar todos los requisitos, hace falta el documento/listado de requisitos. En particular, no hay base en este modelo para atribuir requisitos de interfaz (`RI`), funcionales adicionales (`RF`) ni no funcionales (`RN`).
+
 
 -- fin entregable 2 --
 
