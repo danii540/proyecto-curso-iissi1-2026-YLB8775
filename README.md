@@ -356,7 +356,7 @@ Como Gestor quiero que el sistema me avise o me bloquee si pongo mal una nota o 
 
 -- fin entregable 1 --
 
-#5. Modelo conceptual y 6. Matriz de trazabilidad
+## 5. Modelo conceptual y 6. Matriz de trazabilidad
 
 ## Base y alcance
 
